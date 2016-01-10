@@ -1,0 +1,4 @@
+=== <%= opts.projectTitle %> ===
+
+<%= opts.releaseDate %> - version 1.0
+ * First Release
