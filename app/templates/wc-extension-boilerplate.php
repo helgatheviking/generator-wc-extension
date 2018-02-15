@@ -3,20 +3,21 @@
  * Plugin Name: <%= opts.projectTitle %>
  * Plugin URI:  <%= opts.projectHome %>
  * Description: <%= opts.description %>
- * Version:     0.1.0
+ * Version:     <%= opts.version %>
  * Author:      <%= opts.authorName %>
  * Author URI:  <%= opts.authorUrl %>
- * License: GNU General Public License v3.0
- * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least: 4.4.0
+ * Tested up to: 4.8.2
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.3.0
+ * 
  * Text Domain: <%= opts.funcPrefix %>
  * Domain Path: /languages
- * Requires at least: 3.8.0
- * Tested up to: 4.4.0
- * WC requires at least: 2.4.0
- * WC tested up to: 2.5.0   
- */
-
-/**
+ *
+ * @author <%= opts.authorName %>
+ * @category Core
+ * @package <%= opts.projectTitle %>
+ *
  * Copyright: © <%= opts.Year %> <%= opts.authorName %>.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -30,31 +31,31 @@ if ( ! class_exists( '<%= opts.classPrefix %>' ) ) :
 
 class <%= opts.classPrefix %> {
 
-	const VERSION = '0.1.0';
+	const VERSION = '<%= opts.version %>';
 	const PREFIX  = '<%= opts.classPrefix %>';
-	const REQUIRED_WC = '2.1.0';
+	const REQUIRED_WC = '3.0.0';
 
 	/**
 	 * @var <%= opts.classPrefix %> - the single instance of the class
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	protected static $instance = null;            
+	protected static $_instance = null;            
 
 	/**
-	 * Plugin Directory
+	 * Plugin Path Directory
 	 *
-	 * @since 0.1.0
-	 * @var string $dir
+	 * @since <%= opts.version %>
+	 * @var string $path
 	 */
-	public static $dir = '';
+	private $path = '';
 
 	/**
 	 * Plugin URL
 	 *
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 * @var string $url
 	 */
-	public static $url = '';
+	private $url = '';
 
 
 	/**
@@ -170,11 +171,24 @@ class <%= opts.classPrefix %> {
 	/**
 	 * Displays a warning message if version check fails.
 	 * @return string
-	 * @since  2.1
+	 * @since  <%= opts.version %>
 	 */
 	public function admin_notice() {
-		echo '<div class="error"><p>' . sprintf( __( '<%= opts.projectTitle %> requires at least WooCommerce %s in order to function. Please upgrade WooCommerce.', 'woocommerce-mix-and-match-products', '<%= opts.projectSlug %>' ), self::REQUIRED_WC ) . '</p></div>';
+		echo '<div class="error"><p>' . sprintf( __( '<%= opts.projectTitle %> requires at least WooCommerce %s in order to function. Please upgrade WooCommerce.', '<%= opts.textDomain %>' ), self::REQUIRED_WC ) . '</p></div>';
 	}
+
+	/*-----------------------------------------------------------------------------------*/
+	/* Install */
+	/*-----------------------------------------------------------------------------------*/
+
+
+	/**
+	 * Do something on install.
+	 *
+	 * @return void
+	 * @since  <%= opts.version %>
+	 */
+	public function install() {}
 
 
 	/*-----------------------------------------------------------------------------------*/
@@ -186,27 +200,58 @@ class <%= opts.classPrefix %> {
 	 * Make the plugin translation ready
 	 *
 	 * @return void
-	 * @since  1.0
+	 * @since  <%= opts.version %>
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( '<%= opts.textDomain %>' , false , dirname( plugin_basename( __FILE__ ) ) .  '/languages/' );
 	}
 
 
-} //end class: do not remove or there will be no more guacamole for you
+	/*-----------------------------------------------------------------------------------*/
+	/* Helpers */
+	/*-----------------------------------------------------------------------------------*/
 
-endif; // end class_exists check
+	/**
+	 * Get plugin URL
+	 *
+	 * @return string
+	 * @since  <%= opts.version %>
+	 */
+	public function get_plugin_url() {
+		if( $this->url == '' ) {
+			$this->url = untrailingslashit( plugins_url( '/', __FILE__ ) );
+		}
+		return $this->url;
+	}
+
+	/**
+	 * Get plugin path
+	 *
+	 * @return string
+	 * @since  <%= opts.version %>
+	 */
+	public function get_plugin_path() {
+		if( $this->path == '' ) {
+			$this->path = untrailingslashit( plugin_dir_path( __FILE__ ) );
+		}
+		return $this->path;
+
+	}
+
+} // End class: do not remove or there will be no more guacamole for you.
+
+endif; // End class_exists check.
 
 
 /**
  * Returns the main instance of <%= opts.classPrefix %> to prevent the need to use globals.
  *
- * @since  2.0
+ * @since  <%= opts.version %>
  * @return <%= opts.classPrefix %>
  */
 function <%= opts.classPrefix %>() {
-	return <%= opts.classPrefix %>::instance();
+	return <%= opts.classPrefix %>::get_instance();
 }
 
-// Launch the whole plugin
+// Launch the whole plugin.
 add_action( 'woocommerce_loaded', '<%= opts.classPrefix %>' );
