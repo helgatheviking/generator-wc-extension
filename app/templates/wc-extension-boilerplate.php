@@ -22,23 +22,6 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-/**
- * Required functions
- */
-if ( ! function_exists( 'woothemes_queue_update' ) ){
-	require_once( 'woo-includes/woo-functions.php' );
-}
-
-/**
- * Plugin updates
- */
-woothemes_queue_update( plugin_basename( __FILE__ ), '', '' );
-
-// Quit right now if WooCommerce is not active
-if ( ! is_woocommerce_active() ){
-	return;
-}
-
 
 /**
  * The Main <%= opts.classPrefix %> class
