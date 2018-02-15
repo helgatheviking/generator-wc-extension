@@ -82,56 +82,40 @@ class <%= opts.classPrefix %> {
 	 * @static
 	 * @see <%= opts.classPrefix %>()
 	 * @return <%= opts.classPrefix %> - Main instance
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public static function instance() {
-		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof <%= opts.classPrefix %> ) ) {
-
-			self::$instance = new <%= opts.classPrefix %>();
-
-			self::$dir = plugin_dir_path(__FILE__);
-
-			self::$url = plugin_dir_url(__FILE__);
-
-			/*
-			 * Register our autoloader
-			 */
-			spl_autoload_register( array( self::$instance, 'autoloader' ) );
-
-			// include admin class to handle all backend functions
-			if( is_admin() ){
-				update_option( 'wc_extenstion_boiler_plate_version', self::VERSION );
-				self::$instance->admin = new <%= opts.classPrefix %>_Admin();
-			}
-
-			// include the front-end functions
-			if ( ! is_admin() ) {
-				self::$instance->display = new <%= opts.classPrefix %>_Display();
-				self::$instance->cart = new <%= opts.classPrefix %>_Cart();
-				self::$instance->order = new <%= opts.classPrefix %>_Order();
-			}
-
-			// for compatibility with other extensions
-			self::$instance->compat = new <%= opts.classPrefix %>_Compatibility();
-
+	public static function get_instance() {
+		if ( ! isset( self::$_instance ) ) {
+			self::$_instance = new self();
 		}
-		return self::$instance;
+		return self::$_instance;
+	}
+
+	/**
+	 * Cloning is forbidden.
+	 *
+	 * @since <%= opts.version %>
+	 */
+	public function __clone() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', '<%= opts.textDomain %>' ) );
+	}
+
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since <%= opts.version %>
+	 */
+	public function __wakeup() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', '<%= opts.textDomain %>' ) );
 	}
 
 
+	/**
+	 * Construct the instance of <%= opts.classPrefix %>  
+	 */
 	public function __construct(){
-
-		// check we're running the required version of WC
-		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, self::REQUIRED_WC, '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
-			return false;
-		}
-
-		// Load translation files
-		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
-
-		// Include required files
-		add_action( 'after_setup_theme', array( $this, 'template_includes' ) );
+		$this->includes();
+		$this->init_hooks();
 	}
 
 
@@ -140,35 +124,59 @@ class <%= opts.classPrefix %> {
 	/*-----------------------------------------------------------------------------------*/
 
 	/**
-	 * Load Classes
-	 *
-	 * @return      void
-	 * @since       0.1.0
+	 * Include required core files used in admin and on the frontend
+	 * 
+	 * @since       <%= opts.version %>
 	 */
-	public function autoloader( $class_name ){
-		if ( class_exists( $class_name ) ) {
-			return;
+	public function includes(){
+
+		// Include our autoloader.
+		require_once( 'includes/autoloader/autoloader.php' );
+
+		// Include admin class to handle all backend functions.
+		if( is_admin() ){
+			update_option( '<%= opts.funcPrefix %>_version', self::VERSION );
+			<%= opts.classPrefix %>\Admin\Main::init();
 		}
 
-		if ( false === strpos( $class_name, self::PREFIX ) ) {
-			return;
+		// Include the front-end functions.
+		if ( ! is_admin() ) {
+			<%= opts.classPrefix %>\Display::init();
+			<%= opts.classPrefix %>\Cart::init();
+			<%= opts.classPrefix %>\Order::init();
 		}
 
-		$class_name = 'class-' . strtolower( $class_name );
-		$classes_dir = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR;
+		// For compatibility with other extensions.
+		<%= opts.classPrefix %>\Compatibility\Main::init();
+	}
 
-		$class_file = str_replace( '_', '-', $class_name ) . '.php';
+	/**
+	 * Add actions and filters
+	 *
+	 * @since       <%= opts.version %>
+	 */
+	private function init_hooks() {
 
-		if ( file_exists( $classes_dir . $class_file ) ){
-			require_once $classes_dir . $class_file;
+		register_activation_hook( WC_PLUGIN_FILE, array( __CLASS__, 'install' ) );
+		
+		// Load translation files.
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		// Check we're running the required version of WC.
+		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, self::REQUIRED_WC, '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+			return false;
 		}
+
+		// Include required files.
+		add_action( 'after_setup_theme', array( $this, 'template_includes' ) );
 	}
 
 	/**
 	 * Include frontend functions and hooks
 	 *
 	 * @return void
-	 * @since  1.0
+	 * @since  <%= opts.version %>
 	 */
 	public static function template_includes(){
 		require_once( 'includes/<%= opts.textDomain %>-template-functions.php' );

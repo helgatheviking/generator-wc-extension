@@ -1,4 +1,7 @@
 <?php
+
+namespace <%= opts.classPrefix %>\Admin;
+
 /**
  * <%= opts.projectTitle %> Settings
  *
@@ -10,12 +13,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( ! class_exists( '<%= opts.classPrefix %>_Admin_Settings' ) ) :
-
 /**
- * <%= opts.classPrefix %>_Admin_Settings
+ * Settings
  */
-class <%= opts.classPrefix %>_Admin_Settings extends WC_Settings_Page {
+class Settings extends WC_Settings_Page {
 
 	/**
 	 * Constructor.
@@ -82,6 +83,4 @@ class <%= opts.classPrefix %>_Admin_Settings extends WC_Settings_Page {
 	}
 }
 
-endif;
-
-return new <%= opts.classPrefix %>_Admin_Settings();
+return new <%= opts.classPrefix %>/Admin/Settings();
