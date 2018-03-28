@@ -1,4 +1,7 @@
 <?php
+
+namespace <%= opts.classPrefix %>\Admin;
+
 /**
  * <%= opts.projectTitle %> Admin Main Class
  *
@@ -8,32 +11,32 @@
  * @subpackage	<%= opts.classPrefix %>_Admin_Main
  * @category	Class
  * @author		<%= opts.authorName %>
- * @since		0.1.0
+ * @since		<%= opts.version %>
  */
-class <%= opts.classPrefix %>_Admin {
+class Main {
 
 	/**
 	 * Bootstraps the class and hooks required actions & filters.
 	 *
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public function __construct() {
+	public static function init() {
 
 		if( ! defined( 'DOING_AJAX' ) ) {
 
 			// Settings Link for Plugin page
-			add_filter( 'plugin_action_links_<%= opts.textDomain %>/<%= opts.textDomain %>.php', array( $this, 'add_action_link' ) );
+			add_filter( 'plugin_action_links_<%= opts.textDomain %>/<%= opts.textDomain %>.php', array( __CLASS__, 'add_action_link' ) );
 
 			// Product Meta boxes
-			add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
-			add_action( 'woocommerce_product_options_general_product_data', array( $this, 'add_to_metabox' ) );
-			add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta' ), 20, 2 );
+			add_filter( 'product_type_options', array( __CLASS__, 'product_type_options' ) );
+			add_action( 'woocommerce_product_options_general_product_data', array( __CLASS__, 'add_to_metabox' ) );
+			add_action( 'woocommerce_process_product_meta', array( __CLASS__, 'save_product_meta' ), 20, 2 );
 
 			// Admin Scripts
-			add_action( 'admin_enqueue_scripts', array( $this, 'meta_box_script'), 20 );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'meta_box_script'), 20 );
 
 			// Admin Settings via settings API
-			add_filter( 'woocommerce_get_settings_pages', array( $this, 'add_settings_page' ) );
+			add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'add_settings_page' ) );
 
 		}
 
@@ -49,10 +52,10 @@ class <%= opts.classPrefix %>_Admin {
 	 *
 	 * @param array $links
 	 * @return array
-	 * @since 1.0
+	 * @since <%= opts.version %>
 	 */
 
-	public function add_action_link( $links ) {
+	public static function add_action_link( $links ) {
 		$settings_link = '<a href="'.admin_url('admin.php?page=wc-settings&tab=<%= opts.textDomain %>').'" title="'.__('Go to the settings page', '<%= opts.projectSlug %>').'">'.__( 'Settings', '<%= opts.projectSlug %>' ).'</a>';
 		return array_merge( (array) $settings_link, $links );
 
@@ -67,9 +70,9 @@ class <%= opts.classPrefix %>_Admin {
 	 *
 	 * @param array $options
 	 * @return array
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public function product_type_options( $options ){
+	public static function product_type_options( $options ){
 
 	  $options['<%= opts.funcPrefix %>'] = array(
 	      'id' => '_<%= opts.funcPrefix %>',
@@ -87,9 +90,9 @@ class <%= opts.classPrefix %>_Admin {
 	 * Add text inputs to product metabox
 	 *
 	 * @return print HTML
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public function add_to_metabox(){
+	public static function add_to_metabox(){
 		global $post;
 
 		echo '<div class="options_group">';
@@ -134,7 +137,7 @@ class <%= opts.classPrefix %>_Admin {
 	 * @param object $post
 	 * @return void
 	 */
-	public function save_product_meta( $post_id, $post ) {
+	public static function save_product_meta( $post_id, $post ) {
 
 	   	$product_type 	= empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
 	   	$suggested = '';
@@ -167,9 +170,9 @@ class <%= opts.classPrefix %>_Admin {
 	 *
 	 * @param string $hook
 	 * @return void
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-    public function meta_box_script( $hook ){
+    public static function meta_box_script( $hook ){
 
 		// check if on Edit-Post page (post.php or new-post.php).
 		if( ! in_array( $hook, array( 'post-new.php', 'post.php' ) ) ){
@@ -203,9 +206,9 @@ class <%= opts.classPrefix %>_Admin {
 	 *
 	 * @param array $settings ( the included settings pages )
 	 * @return array
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public function add_settings_page( $settings ) {
+	public static function add_settings_page( $settings ) {
 		$settings[] = include( 'class-<%= opts.textDomain %>-admin-settings.php' );
 		return $settings;
 	}

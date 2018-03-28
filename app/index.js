@@ -76,6 +76,11 @@ var WC_Generator = yeoman.generators.Base.extend({
 			{
 				name:    'authorUrl',
 				message: 'Author URL'
+			},
+			{
+				name:    'version',
+				message: 'Plugin Version',
+				default: '1.0.0'
 			}
 		];
 		// gather initial settings
@@ -85,7 +90,6 @@ var WC_Generator = yeoman.generators.Base.extend({
 			this.opts.classPrefix = this.opts.classPrefix.replace( /[\s]/g, '_' );
 			this.opts.funcPrefix = this.opts.classPrefix.toLowerCase();
 			this.opts.textDomain = this.opts.funcPrefix.replace( /[\s|_]/g, '-' );
-			this.fileSlug = this.opts.projectSlug;
 			this.namespace = this.opts.projectTitle.replace( /[\s|-]/g, '_' ).replace( /( ^|_ )( [a-z] )/g, function( match, group1, group2 ){
 				return group1 + group2.toUpperCase(); 
 			});
@@ -102,36 +106,34 @@ var WC_Generator = yeoman.generators.Base.extend({
 	plugin: function() {
 		this.template( 'readme.txt', 'readme.txt' );
 		this.template( 'changelog.txt', 'changelog.txt' );
-		this.template( 'wc-extension-boilerplate.php', this.fileSlug + '.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-admin-settings.php', 'includes/class-' + this.opts.funcPrefix + '-admin-settings.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-admin.php', 'includes/class-' + this.opts.funcPrefix + '-admin.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-cart.php', 'includes/class-' + this.opts.funcPrefix + '-cart.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-compatibility.php', 'includes/class-' + this.opts.funcPrefix + '-compatibility.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-display.php', 'includes/class-' + this.opts.funcPrefix + '-display.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-helpers.php', 'includes/class-' + this.opts.funcPrefix + '-helpers.php' );
-		this.template( 'includes/class-wc-extension-boilerplate-order.php', 'includes/class-' + this.opts.funcPrefix + '-order.php' );
-		this.template( 'includes/wc-extension-boilerplate-template-functions.php', 'includes/' + this.opts.funcPrefix + '-template-functions.php' );
-		this.template( 'includes/wc-extension-boilerplate-template-hooks.php', 'includes/' + this.opts.funcPrefix + '-template-hooks.php' );
+		this.template( 'wc-extension-boilerplate.php', this.opts.textDomain + '.php' );
+		this.template( 'includes/admin/class-settings.php', 'includes/admin/settings.php' );
+		this.template( 'includes/admin/class-main.php', 'includes/admin/main.php' );
+		this.template( 'includes/compatibility/class-main.php', 'includes/compatibility/class-main.php' );
+		this.template( 'includes/class-cart.php', 'includes/class-cart.php' );
+		this.template( 'includes/class-display.php', 'includes/class-display.php' );
+		this.template( 'includes/class-helpers.php', 'includes/class-helpers.php' );
+		this.template( 'includes/class-order.php', 'includes/class-order.php' );
+		this.template( 'includes/wc-extension-boilerplate-template-functions.php', 'includes/' + this.opts.textDomain + '-template-functions.php' );
+		this.template( 'includes/wc-extension-boilerplate-template-hooks.php', 'includes/' + this.opts.textDomain + '-template-hooks.php' );
 		this.copy( 'templates/single-product/sample-template.php', 'templates/single-product/sample-template.php' );
-		this.copy( 'woo-includes/class-wc-dependencies.php', 'woo-includes/class-wc-dependencies.php' );
-		this.copy( 'woo-includes/woo-functions.php', 'woo-includes/woo-functions.php' );
 	},
 
 	i18n: function() {
-		this.template( 'languages/woocommerce-extension-boilerplate.pot', 'languages/' + this.fileSlug + '.pot' );
+		this.template( 'languages/woocommerce-extension-boilerplate.pot', 'languages/' + this.textDomain + '.pot' );
 	},
 
 	js: function() {
-		this.template( 'assets/js/wc-extension-boilerplate-frontend.js', 'assets/js/' + this.fileSlug + '-frontend.js' );
-		this.template( 'assets/js/wc-extension-boilerplate-admin.js', 'assets/js/' + this.fileSlug + '-admin.js' );
+		this.template( 'assets/js/wc-extension-boilerplate-frontend.js', 'assets/js/' + this.textDomain + '-frontend.js' );
+		this.template( 'assets/js/wc-extension-boilerplate-admin.js', 'assets/js/' + this.textDomain + '-admin.js' );
 	},
 
 	scss: function() {
-		this.template( 'assets/scss/wc-extension-boilerplate-frontend.scss', 'assets/scss/' + this.fileSlug + '-frontend.scss' );
+		this.template( 'assets/scss/wc-extension-boilerplate-frontend.scss', 'assets/scss/' + this.textDomain + '-frontend.scss' );
 	},
 
 	css: function() {
-		this.template( 'assets/css/wc-extension-boilerplate-frontend.css', 'assets/css/' + this.fileSlug + '-frontend.css' );
+		this.template( 'assets/css/wc-extension-boilerplate-frontend.css', 'assets/css/' + this.textDomain + '-frontend.css' );
 	},
 
 	grunt: function() {

@@ -1,10 +1,13 @@
 <?php
+
+namespace <%= opts.classPrefix %>;
+
 /**
  * <%= opts.projectTitle %> cart functions and filters.
  *
  * @class 	<%= opts.classPrefix %>_Cart
- * @version 0.1.0
- * @since   0.1.0
+ * @version <%= opts.version %>
+ * @since   <%= opts.version %>
  */
 
 // Exit if accessed directly
@@ -12,15 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class <%= opts.classPrefix %>_Cart {
+class Cart {
 
 	/**
-	 * __construct function.
-	 *
-	 * @access public
-	 * @return void
+	 * Setup cart class.
 	 */
-	public function __construct() {
+	public static function init() {
 
 		// Functions for cart actions - ensure they have a priority before addons (10)
 		add_filter( 'woocommerce_is_purchasable', array( $this, 'is_purchasable' ), 5, 2 );
@@ -37,7 +37,7 @@ class <%= opts.classPrefix %>_Cart {
 
 	/*
 	 * Override WC's is_purchasable
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
 	public function is_purchasable( $purchasable , $product ) {
 		if( <%= opts.classPrefix %>_Helpers::is_product_checkbox( $product->id ) ){
@@ -50,7 +50,7 @@ class <%= opts.classPrefix %>_Cart {
 
 	/*
 	 * Add cart session data
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
 	public function add_cart_item_data( $cart_item_data, $product_id, $variation_id ) {
 
@@ -71,7 +71,7 @@ class <%= opts.classPrefix %>_Cart {
 
 	/*
 	 * Preserve cart session data
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
 	public function get_cart_item_from_session( $cart_item, $values ) {
 
@@ -93,7 +93,7 @@ class <%= opts.classPrefix %>_Cart {
 
 	/*
 	 * Modify item in the cart
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
 	public function add_cart_item( $cart_item ) {
 
@@ -110,7 +110,7 @@ class <%= opts.classPrefix %>_Cart {
 
 	/*
 	 * Validate before adding to cart
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
 	public function validate_add_cart_item( $passed, $product_id, $quantity, $variation_id = '', $variations= '' ) {
 

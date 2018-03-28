@@ -3,41 +3,25 @@
  * Plugin Name: <%= opts.projectTitle %>
  * Plugin URI:  <%= opts.projectHome %>
  * Description: <%= opts.description %>
- * Version:     0.1.0
+ * Version:     <%= opts.version %>
  * Author:      <%= opts.authorName %>
  * Author URI:  <%= opts.authorUrl %>
- * License: GNU General Public License v3.0
- * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least: 4.4.0
+ * Tested up to: 4.8.2
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.3.0
+ * 
  * Text Domain: <%= opts.funcPrefix %>
  * Domain Path: /languages
- * Requires at least: 3.8.0
- * Tested up to: 4.4.0
- * WC requires at least: 2.4.0
- * WC tested up to: 2.5.0   
- */
-
-/**
+ *
+ * @author <%= opts.authorName %>
+ * @category Core
+ * @package <%= opts.projectTitle %>
+ *
  * Copyright: © <%= opts.Year %> <%= opts.authorName %>.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
-
-/**
- * Required functions
- */
-if ( ! function_exists( 'woothemes_queue_update' ) ){
-	require_once( 'woo-includes/woo-functions.php' );
-}
-
-/**
- * Plugin updates
- */
-woothemes_queue_update( plugin_basename( __FILE__ ), '', '' );
-
-// Quit right now if WooCommerce is not active
-if ( ! is_woocommerce_active() ){
-	return;
-}
 
 
 /**
@@ -47,31 +31,31 @@ if ( ! class_exists( '<%= opts.classPrefix %>' ) ) :
 
 class <%= opts.classPrefix %> {
 
-	const VERSION = '0.1.0';
+	const VERSION = '<%= opts.version %>';
 	const PREFIX  = '<%= opts.classPrefix %>';
-	const REQUIRED_WC = '2.1.0';
+	const REQUIRED_WC = '3.0.0';
 
 	/**
 	 * @var <%= opts.classPrefix %> - the single instance of the class
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	protected static $instance = null;            
+	protected static $_instance = null;            
 
 	/**
-	 * Plugin Directory
+	 * Plugin Path Directory
 	 *
-	 * @since 0.1.0
-	 * @var string $dir
+	 * @since <%= opts.version %>
+	 * @var string $path
 	 */
-	public static $dir = '';
+	private $path = '';
 
 	/**
 	 * Plugin URL
 	 *
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 * @var string $url
 	 */
-	public static $url = '';
+	private $url = '';
 
 
 	/**
@@ -82,56 +66,40 @@ class <%= opts.classPrefix %> {
 	 * @static
 	 * @see <%= opts.classPrefix %>()
 	 * @return <%= opts.classPrefix %> - Main instance
-	 * @since 0.1.0
+	 * @since <%= opts.version %>
 	 */
-	public static function instance() {
-		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof <%= opts.classPrefix %> ) ) {
-
-			self::$instance = new <%= opts.classPrefix %>();
-
-			self::$dir = plugin_dir_path(__FILE__);
-
-			self::$url = plugin_dir_url(__FILE__);
-
-			/*
-			 * Register our autoloader
-			 */
-			spl_autoload_register( array( self::$instance, 'autoloader' ) );
-
-			// include admin class to handle all backend functions
-			if( is_admin() ){
-				update_option( 'wc_extenstion_boiler_plate_version', self::VERSION );
-				self::$instance->admin = new <%= opts.classPrefix %>_Admin();
-			}
-
-			// include the front-end functions
-			if ( ! is_admin() ) {
-				self::$instance->display = new <%= opts.classPrefix %>_Display();
-				self::$instance->cart = new <%= opts.classPrefix %>_Cart();
-				self::$instance->order = new <%= opts.classPrefix %>_Order();
-			}
-
-			// for compatibility with other extensions
-			self::$instance->compat = new <%= opts.classPrefix %>_Compatibility();
-
+	public static function get_instance() {
+		if ( ! isset( self::$_instance ) ) {
+			self::$_instance = new self();
 		}
-		return self::$instance;
+		return self::$_instance;
+	}
+
+	/**
+	 * Cloning is forbidden.
+	 *
+	 * @since <%= opts.version %>
+	 */
+	public function __clone() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', '<%= opts.textDomain %>' ) );
+	}
+
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since <%= opts.version %>
+	 */
+	public function __wakeup() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', '<%= opts.textDomain %>' ) );
 	}
 
 
+	/**
+	 * Construct the instance of <%= opts.classPrefix %>  
+	 */
 	public function __construct(){
-
-		// check we're running the required version of WC
-		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, self::REQUIRED_WC, '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
-			return false;
-		}
-
-		// Load translation files
-		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
-
-		// Include required files
-		add_action( 'after_setup_theme', array( $this, 'template_includes' ) );
+		$this->includes();
+		$this->init_hooks();
 	}
 
 
@@ -140,35 +108,59 @@ class <%= opts.classPrefix %> {
 	/*-----------------------------------------------------------------------------------*/
 
 	/**
-	 * Load Classes
-	 *
-	 * @return      void
-	 * @since       0.1.0
+	 * Include required core files used in admin and on the frontend
+	 * 
+	 * @since       <%= opts.version %>
 	 */
-	public function autoloader( $class_name ){
-		if ( class_exists( $class_name ) ) {
-			return;
+	public function includes(){
+
+		// Include our autoloader.
+		require_once( 'includes/autoloader/autoloader.php' );
+
+		// Include admin class to handle all backend functions.
+		if( is_admin() ){
+			update_option( '<%= opts.funcPrefix %>_version', self::VERSION );
+			<%= opts.classPrefix %>\Admin\Main::init();
 		}
 
-		if ( false === strpos( $class_name, self::PREFIX ) ) {
-			return;
+		// Include the front-end functions.
+		if ( ! is_admin() ) {
+			<%= opts.classPrefix %>\Display::init();
+			<%= opts.classPrefix %>\Cart::init();
+			<%= opts.classPrefix %>\Order::init();
 		}
 
-		$class_name = 'class-' . strtolower( $class_name );
-		$classes_dir = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR;
+		// For compatibility with other extensions.
+		<%= opts.classPrefix %>\Compatibility\Main::init();
+	}
 
-		$class_file = str_replace( '_', '-', $class_name ) . '.php';
+	/**
+	 * Add actions and filters
+	 *
+	 * @since       <%= opts.version %>
+	 */
+	private function init_hooks() {
 
-		if ( file_exists( $classes_dir . $class_file ) ){
-			require_once $classes_dir . $class_file;
+		register_activation_hook( WC_PLUGIN_FILE, array( __CLASS__, 'install' ) );
+		
+		// Load translation files.
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		// Check we're running the required version of WC.
+		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, self::REQUIRED_WC, '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+			return false;
 		}
+
+		// Include required files.
+		add_action( 'after_setup_theme', array( $this, 'template_includes' ) );
 	}
 
 	/**
 	 * Include frontend functions and hooks
 	 *
 	 * @return void
-	 * @since  1.0
+	 * @since  <%= opts.version %>
 	 */
 	public static function template_includes(){
 		require_once( 'includes/<%= opts.textDomain %>-template-functions.php' );
@@ -179,11 +171,24 @@ class <%= opts.classPrefix %> {
 	/**
 	 * Displays a warning message if version check fails.
 	 * @return string
-	 * @since  2.1
+	 * @since  <%= opts.version %>
 	 */
 	public function admin_notice() {
-		echo '<div class="error"><p>' . sprintf( __( '<%= opts.projectTitle %> requires at least WooCommerce %s in order to function. Please upgrade WooCommerce.', 'woocommerce-mix-and-match-products', '<%= opts.projectSlug %>' ), self::REQUIRED_WC ) . '</p></div>';
+		echo '<div class="error"><p>' . sprintf( __( '<%= opts.projectTitle %> requires at least WooCommerce %s in order to function. Please upgrade WooCommerce.', '<%= opts.textDomain %>' ), self::REQUIRED_WC ) . '</p></div>';
 	}
+
+	/*-----------------------------------------------------------------------------------*/
+	/* Install */
+	/*-----------------------------------------------------------------------------------*/
+
+
+	/**
+	 * Do something on install.
+	 *
+	 * @return void
+	 * @since  <%= opts.version %>
+	 */
+	public function install() {}
 
 
 	/*-----------------------------------------------------------------------------------*/
@@ -195,27 +200,58 @@ class <%= opts.classPrefix %> {
 	 * Make the plugin translation ready
 	 *
 	 * @return void
-	 * @since  1.0
+	 * @since  <%= opts.version %>
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( '<%= opts.textDomain %>' , false , dirname( plugin_basename( __FILE__ ) ) .  '/languages/' );
 	}
 
 
-} //end class: do not remove or there will be no more guacamole for you
+	/*-----------------------------------------------------------------------------------*/
+	/* Helpers */
+	/*-----------------------------------------------------------------------------------*/
 
-endif; // end class_exists check
+	/**
+	 * Get plugin URL
+	 *
+	 * @return string
+	 * @since  <%= opts.version %>
+	 */
+	public function get_plugin_url() {
+		if( $this->url == '' ) {
+			$this->url = untrailingslashit( plugins_url( '/', __FILE__ ) );
+		}
+		return $this->url;
+	}
+
+	/**
+	 * Get plugin path
+	 *
+	 * @return string
+	 * @since  <%= opts.version %>
+	 */
+	public function get_plugin_path() {
+		if( $this->path == '' ) {
+			$this->path = untrailingslashit( plugin_dir_path( __FILE__ ) );
+		}
+		return $this->path;
+
+	}
+
+} // End class: do not remove or there will be no more guacamole for you.
+
+endif; // End class_exists check.
 
 
 /**
  * Returns the main instance of <%= opts.classPrefix %> to prevent the need to use globals.
  *
- * @since  2.0
+ * @since  <%= opts.version %>
  * @return <%= opts.classPrefix %>
  */
 function <%= opts.classPrefix %>() {
-	return <%= opts.classPrefix %>::instance();
+	return <%= opts.classPrefix %>::get_instance();
 }
 
-// Launch the whole plugin
+// Launch the whole plugin.
 add_action( 'woocommerce_loaded', '<%= opts.classPrefix %>' );

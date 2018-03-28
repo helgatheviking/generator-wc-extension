@@ -1,10 +1,13 @@
 <?php
+
+namespace <%= opts.classPrefix %>;
+
 /**
  * <%= opts.projectTitle %> order functions and filters.
  *
  * @class 	<%= opts.classPrefix %>_Order
- * @version 0.1.0
- * @since   0.1.0
+ * @version <%= opts.version %>
+ * @since   <%= opts.version %>
  */
 
 // Exit if accessed directly
@@ -12,45 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class <%= opts.classPrefix %>_Order {
+class Order {
 
 	/**
 	 * Setup order class
 	 */
-	public function __construct() {
+	public static function init() {
 
 		// Filter price output shown in cart, review-order & order-details templates
-		add_filter( 'woocommerce_order_formatted_line_subtotal', array( $this, 'order_item_subtotal' ), 10, 3 );
+		add_filter( 'woocommerce_order_formatted_line_subtotal', array( __CLASS__, 'order_item_subtotal' ), 10, 3 );
 
 		// Modify order items to include bundle meta
-		add_action( 'woocommerce_add_order_item_meta', array( $this, 'add_order_item_meta' ), 10, 3 );
+		add_action( 'woocommerce_add_order_item_meta', array( __CLASS__, 'add_order_item_meta' ), 10, 3 );
 
-	}
-
-
-	/**
-	 * Find the parent of a bundled item in an order.
-	 *
-	 * @param  	array    $item
-	 * @param  	WC_Order $order
-	 * @return 	array $item
-	 */
-	public function get_bundled_order_item_container( $item, $order ) {
-
-		// find container item
-		foreach ( $order->get_items() as $order_item ) {
-
-			$is_parent = isset( $item[ 'mnm_container' ] ) && isset( $order_item[ 'mnm_cart_key' ] ) && $item[ 'mnm_container' ] === $order_item[ 'mnm_cart_key' ];
-
-			if ( $is_parent ) {
-
-				$parent_item = $order_item;
-
-				return $parent_item;
-			}
-		}
-
-		return false;
 	}
 
 
@@ -61,8 +38,9 @@ class <%= opts.classPrefix %>_Order {
 	 * @param  array    $item       the items
 	 * @param  WC_Order $order      the order
 	 * @return string               modified subtotal string.
+	 * @since <%= opts.version %>
 	 */
-	public function order_item_subtotal( $subtotal, $item, $order ) {
+	public static function order_item_subtotal( $subtotal, $item, $order ) {
 		return sprintf( __( 'Sample subtotal: %s', '<%= opts.projectSlug %>' ), $subtotal );
 	}
 
@@ -73,8 +51,9 @@ class <%= opts.classPrefix %>_Order {
 	 * @param  int      $item_id      order item id
 	 * @param  array    $cart_item_values   cart item data
 	 * @return void
+	 * @since <%= opts.version %>
 	 */
-	public function add_order_item_meta( $item_id, $cart_item_values, $cart_item_key ) {
+	public static function add_order_item_meta( $item_id, $cart_item_values, $cart_item_key ) {
 
 		// add data to the product
 		if ( isset( $cart_item_values[ 'wc-boilerplate-extension-number' ] ) ) {
