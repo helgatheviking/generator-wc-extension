@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Kathy Darling",
+      "authorEmail": "kathy@kathyisawesome.com",
+      "authorUrl": "www.kathyisawesome.com"
+    }
+  }
+}

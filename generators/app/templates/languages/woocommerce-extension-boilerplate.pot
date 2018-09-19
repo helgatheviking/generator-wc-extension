@@ -1,0 +1,127 @@
+# Copyright (C) <%= props.Year %> 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: "
+"http://wordpress.org/support/plugin/<%= props.projectSlug %>\n"
+"POT-Creation-Date: <%= props.releaseDate %> 17:13:22+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: <%= props.Year %>-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.4.9\n"
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:25
+#: includes/class-<%= props.textDomain %>-admin.php:77
+msgid "<%= props.projectTitle %>"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:43
+msgid "<%= props.projectTitle %> Settings"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:45
+msgid "Modify the text strings used by the Name Your Own Price extension."
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:49
+#: includes/class-<%= props.textDomain %>-admin.php:118
+msgid "Sample Text Field"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:50
+msgid "This is a sample text field."
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:54
+msgid "Default value"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:64
+msgid "<%= props.projectTitle %> Additional Settings"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin-settings.php:70
+msgid "<%= props.projectTitle %> Sample Checkbox"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:56
+msgid "Go to the settings page"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:56
+msgid "Settings"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:78
+msgid "A description of this checkbox"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:101
+msgid "Sample Checkbox"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:102
+msgid "This is a sample checkbox."
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:108
+msgid "Sample Number Field"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:110
+msgid "This is a sample number field"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:120
+msgid "This is a sample text field"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-admin.php:190
+msgid "Sample String"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-cart.php:118
+msgid "This is a sample notice message"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-cart.php:123
+msgid "This is a sample error message"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-display.php:62
+msgid "A Localized String"
+msgstr ""
+
+#: includes/class-<%= props.textDomain %>-order.php:66
+msgid "Sample subtotal: %s"
+msgstr ""
+
+#: includes/<%= props.textDomain %>-template-functions.php:12
+msgid "Before Template"
+msgstr ""
+
+#: includes/<%= props.textDomain %>-template-functions.php:16
+msgid "After Template"
+msgstr ""
+
+#: templates/single-product/sample-template.php:17
+msgid "<%= props.projectTitle %> Template"
+msgstr ""
+
+#: templates/single-product/sample-template.php:20
+msgid "Sample Text Option: %s"
+msgstr ""
+
+#: templates/single-product/sample-template.php:25
+msgid "Sample Text Meta: %s"
+msgstr ""
+
+#: <%= props.textDomain %>.php:180
+msgid ""
+"<%= props.projectTitle %> requires at least WooCommerce %s in order "
+"to function. Please upgrade WooCommerce."
+msgstr ""

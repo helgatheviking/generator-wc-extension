@@ -1,0 +1,4 @@
+=== <%= props.projectTitle %> ===
+
+<%= props.releaseDate %> - version 1.0
+ * First Release
